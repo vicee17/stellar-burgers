@@ -40,6 +40,7 @@ export const loginUser = createAsyncThunk(
       const response = await loginUserApi(userData);
       localStorage.setItem('refreshToken', response.refreshToken);
       setCookie('accessToken', response.accessToken);
+      console.log('Token set in cookie:', response.accessToken);
       return response.user;
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -65,9 +66,12 @@ export const fetchUser = createAsyncThunk(
   'user/fetchUser',
   async (_, { rejectWithValue }) => {
     try {
-      const responce = await getUserApi();
-      return responce.user;
+      console.log('fetchUser: calling getUserApi');
+      const response = await getUserApi();
+      console.log('fetchUser: success', response.user);
+      return response.user;
     } catch (error) {
+      console.log('fetchUser: error', (error as Error).message);
       return rejectWithValue((error as Error).message);
     }
   }
@@ -149,6 +153,7 @@ const userSlice = createSlice({
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
+        state.isAuthChecked = true;
       })
       //registraition
       .addCase(registerUser.pending, (state) => {
@@ -164,6 +169,7 @@ const userSlice = createSlice({
       .addCase(registerUser.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
+        state.isAuthChecked = true;
       })
       //fetchUser
       .addCase(fetchUser.pending, (state) => {
@@ -177,9 +183,11 @@ const userSlice = createSlice({
         state.user = action.payload;
       })
       .addCase(fetchUser.rejected, (state, action) => {
+        console.log('fetchUser rejected - setting auth checked to true');
         state.isLoading = false;
         state.error = action.payload as string;
         state.isAuthChecked = true;
+        state.user = null;
       })
       //updateUser
       .addCase(updateUser.pending, (state) => {

@@ -4,8 +4,8 @@ import {
   fetchUser,
   selectIsAuthChecked,
   setAuthCheck
-} from 'src/services/userSlice';
-import { getCookie } from 'src/utils/cookie';
+} from '../services/userSlice';
+import { getCookie } from '../utils/cookie';
 
 export const useAuth = () => {
   const dispatch = useDispatch();
@@ -13,10 +13,15 @@ export const useAuth = () => {
 
   useEffect(() => {
     const token = getCookie('accessToken');
+    console.log('useAuth: token =', token);
+    console.log('useAuth: isAuthChecked =', isAuthChecked);
+
     if (token && !isAuthChecked) {
       dispatch(fetchUser());
+      console.log('Dispatching fetchUser');
     } else {
       dispatch(setAuthCheck(true));
+      console.log('Setting auth checked to true directly');
     }
   }, [dispatch, isAuthChecked]);
 };
