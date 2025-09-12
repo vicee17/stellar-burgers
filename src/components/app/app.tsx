@@ -16,12 +16,25 @@ import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
 import { Routes, Route } from 'react-router-dom';
 import { ProtectedRoute } from '../ProtectedRoute/ProtecredRoute';
 import { useAuth } from '../../hooks/useAuth';
-import { useSelector } from '../../services/store';
-import { selectIsAuth } from '../../services/userSlice';
+import { useDispatch, useSelector } from '../../services/store';
+import { selectIsAuthChecked, setAuthCheck } from '../../services/userSlice';
+import { useEffect } from 'react';
+import { fetchIngredients } from '../../services/ingredientsSlice';
 
 const App = () => {
-  useAuth();
-  const isAuthChecked = useSelector(selectIsAuth);
+  const dispatch = useDispatch();
+  const { isAuthChecked } = useAuth();
+  const ingredients = useSelector((state) => state.ingredients.items);
+
+  useEffect(() => {
+    dispatch(fetchIngredients()).catch((error) =>
+      console.error('Fetch ingredients error:', error)
+    );
+    if (!isAuthChecked) {
+      dispatch(setAuthCheck(true));
+      console.log('App: setAuthCheck triggered');
+    }
+  }, [dispatch, isAuthChecked]);
 
   if (!isAuthChecked) {
     return <div>Загрузка...</div>;

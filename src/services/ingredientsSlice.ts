@@ -1,0 +1,80 @@
+import { getIngredientsApi } from '@api';
+import {
+  createAsyncThunk,
+  createSlice,
+  createSelector
+} from '@reduxjs/toolkit';
+import { TIngredient } from '@utils-types';
+
+export interface IngredientsState {
+  items: TIngredient[];
+  isLoading: boolean;
+  error: string | null;
+}
+
+const initialState: IngredientsState = {
+  items: [],
+  isLoading: false,
+  error: null
+};
+
+export const fetchIngredients = createAsyncThunk(
+  'ingredients/fetchIngredients',
+  async (_, { rejectWithValue }) => {
+    try {
+      const data = await getIngredientsApi();
+      console.log('API Response:', data);
+      return data;
+    } catch (error) {
+      console.error('API Error:', error);
+      return rejectWithValue((error as Error).message);
+    }
+  }
+);
+
+const ingredientsSlice = createSlice({
+  name: 'ingredients',
+  initialState,
+  reducers: {
+    clearIngredientsError: (state) => {
+      state.error = null;
+    }
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchIngredients.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchIngredients.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.items = action.payload;
+      })
+      .addCase(fetchIngredients.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      });
+  }
+});
+
+export const { clearIngredientsError } = ingredientsSlice.actions;
+export default ingredientsSlice.reducer;
+
+export const selectIngredients = (state: { ingredients: IngredientsState }) =>
+  state.ingredients.items;
+export const selectIngredientsLoading = (state: {
+  ingredients: IngredientsState;
+}) => state.ingredients.isLoading;
+export const selectIngredientsError = (state: {
+  ingredients: IngredientsState;
+}) => state.ingredients.error;
+
+export const selectBuns = createSelector([selectIngredients], (items) =>
+  items.filter((item) => item.type === 'bun')
+);
+export const selectMains = createSelector([selectIngredients], (items) =>
+  items.filter((item) => item.type === 'main')
+);
+export const selectSauces = createSelector([selectIngredients], (items) =>
+  items.filter((item) => item.type === 'sauce')
+);
