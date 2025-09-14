@@ -6,20 +6,10 @@ import { BurgerIngredients } from '../../components';
 import { BurgerConstructor } from '../../components';
 import { Preloader } from '../../components/ui';
 import { FC, useEffect } from 'react';
-import {
-  fetchIngredients,
-  selectIngredientsLoading
-} from '../../services/ingredientsSlice';
+import { selectIngredientsLoading } from '../../services/ingredientsSlice';
 
 export const ConstructorPage: FC = () => {
-  const dispatch = useDispatch();
   const isIngredientsLoading = useSelector(selectIngredientsLoading);
-
-  useEffect(() => {
-    dispatch(fetchIngredients()).catch((error) => {
-      console.error('Dispatch fetchIngredients error:', error);
-    });
-  }, [dispatch]);
 
   return (
     <>

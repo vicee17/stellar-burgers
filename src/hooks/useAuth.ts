@@ -17,7 +17,6 @@ export const useAuth = (): AuthState => {
 
   useEffect(() => {
     const token = getCookie('accessToken');
-    console.log('useAuth: token =', token, 'isAuthChecked =', isAuthChecked);
 
     if (token && !isAuthChecked) {
       dispatch(fetchUser()).catch((error) =>

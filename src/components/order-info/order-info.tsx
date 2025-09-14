@@ -2,24 +2,37 @@ import { FC, useMemo } from 'react';
 import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
+import { useSelector } from '../../services/store';
+import { selectConstructorIngredients } from '../../services/constructorSlice';
+import { selectFeedData, selectFeedLoading } from '../../services/feedSlice';
+import { useParams } from 'react-router-dom';
+import { selectIngredientsLoading } from '../../services/ingredientsSlice';
 
 export const OrderInfo: FC = () => {
-  /** TODO: взять переменные orderData и ingredients из стора */
-  const orderData = {
-    createdAt: '',
-    ingredients: [],
-    _id: '',
-    status: '',
-    name: '',
-    updatedAt: 'string',
-    number: 0
-  };
+  const ingredients = useSelector(selectConstructorIngredients);
+  const orders = useSelector(selectFeedData);
+  const { number } = useParams<{ number?: string }>();
+  const ingredientLoading = useSelector(selectIngredientsLoading);
+  const feedLoading = useSelector(selectFeedLoading);
+  const ordersData = useSelector(selectFeedData);
 
-  const ingredients: TIngredient[] = [];
+  const orderData = useMemo(() => {
+    if (!number || !ordersData?.orders?.length) return null;
+    const orderNumber = parseInt(number, 10);
+    const foundOrder = ordersData.orders.find(
+      (order) => order.number === orderNumber
+    );
+    if (!foundOrder) {
+      console.error(`Order with number ${number} not found`);
+      return null;
+    }
+    return foundOrder;
+  }, [number, ordersData]);
 
   /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {
-    if (!orderData || !ingredients.length) return null;
+    if (!orderData || !ingredients.length || ingredientLoading || feedLoading)
+      return null;
 
     const date = new Date(orderData.createdAt);
 

@@ -240,3 +240,5 @@ export const selectIsLoading = (state: { user: UserState }) =>
 export const selectError = (state: { user: UserState }) => state.user.error;
 export const selectIsAuthChecked = (state: { user: UserState }) =>
   state.user.isAuthChecked;
+export const selectUserName = (state: { user: UserState }) =>
+  state.user.user?.name || '';

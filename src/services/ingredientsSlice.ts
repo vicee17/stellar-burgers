@@ -23,7 +23,6 @@ export const fetchIngredients = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const data = await getIngredientsApi();
-      console.log('API Response:', data);
       return data;
     } catch (error) {
       console.error('API Error:', error);

@@ -17,7 +17,7 @@ import { Routes, Route } from 'react-router-dom';
 import { ProtectedRoute } from '../ProtectedRoute/ProtecredRoute';
 import { useAuth } from '../../hooks/useAuth';
 import { useDispatch, useSelector } from '../../services/store';
-import { selectIsAuthChecked, setAuthCheck } from '../../services/userSlice';
+import { setAuthCheck } from '../../services/userSlice';
 import { useEffect } from 'react';
 import { fetchIngredients } from '../../services/ingredientsSlice';
 
@@ -32,9 +32,8 @@ const App = () => {
     );
     if (!isAuthChecked) {
       dispatch(setAuthCheck(true));
-      console.log('App: setAuthCheck triggered');
     }
-  }, [dispatch, isAuthChecked]);
+  }, []);
 
   if (!isAuthChecked) {
     return <div>Загрузка...</div>;

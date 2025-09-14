@@ -3,7 +3,7 @@ import { TConstructorIngredient, TIngredient } from '@utils-types';
 
 export interface ConstructorState {
   bun: TIngredient | null;
-  ingredients: TConstructorIngredient[] | null;
+  ingredients: TConstructorIngredient[];
 }
 
 const initialState: ConstructorState = {
@@ -12,7 +12,7 @@ const initialState: ConstructorState = {
 };
 
 export const constructorSlice = createSlice({
-  name: 'constructor',
+  name: 'burgerConstructor',
   initialState,
   reducers: {
     addBun: (state, action: PayloadAction<TIngredient>) => {
@@ -56,11 +56,11 @@ export const {
 export default constructorSlice.reducer;
 
 export const selectConstructorItems = (state: {
-  constructor: ConstructorState;
-}) => state.constructor;
+  burgerConstructor: ConstructorState;
+}) => state.burgerConstructor;
 export const selectConstructorBun = (state: {
-  constructor: ConstructorState;
-}) => state.constructor.bun;
+  burgerConstructor: ConstructorState;
+}) => state.burgerConstructor.bun;
 export const selectConstructorIngredients = (state: {
-  constructor: ConstructorState;
-}) => state.constructor.ingredients;
+  burgerConstructor: ConstructorState;
+}) => state.burgerConstructor.ingredients;

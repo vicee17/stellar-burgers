@@ -8,15 +8,17 @@ import {
 
 import userReduser from '../services/userSlice';
 import ingredientsReducer from '../services/ingredientsSlice';
-import constructorReducer from '../services/constructorSlice';
+import burgerConstructorReducer from '../services/constructorSlice';
 import orderReducer from '../services/orderSlice';
+import feedReducesr from '../services/feedSlice';
 
 const store = configureStore({
   reducer: {
     user: userReduser,
     ingredients: ingredientsReducer,
-    constructor: constructorReducer,
-    order: orderReducer
+    burgerConstructor: burgerConstructorReducer,
+    order: orderReducer,
+    feed: feedReducesr
   },
   devTools: process.env.NODE_ENV !== 'production',
   middleware: (getDefaultMiddleware) =>
