@@ -42,17 +42,9 @@ const App = () => {
   }
 
   const handleClose = () => {
-    console.log(
-      'handleClose called, background:',
-      background,
-      'history length:',
-      window.history.length
-    );
     if (background && window.history.length > 1) {
       window.history.back();
-      console.log('Modal closed via history.back');
     } else {
-      console.log('Modal closed manually or no history');
       navigate('/', { replace: true });
     }
   };

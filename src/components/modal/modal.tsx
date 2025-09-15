@@ -7,15 +7,10 @@ import { ModalUI } from '@ui';
 const modalRoot = document.getElementById('modals');
 
 export const Modal: FC<TModalProps> = memo(({ title, onClose, children }) => {
-  const isClosed = useRef(false);
-
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && !e.repeat && !isClosed.current) {
-        console.log('Esc key triggered');
-        isClosed.current = true;
+      if (e.key === 'Escape' && !e.repeat) {
         onClose();
-        isClosed.current = false;
       }
     };
 

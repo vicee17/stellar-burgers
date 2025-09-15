@@ -21,19 +21,12 @@ export const BurgerIngredient: FC<TBurgerIngredientProps> = memo(
       }
     };
 
-    const handleViewClick = () => {
-      navigate(`/ingredients/${ingredient._id}`, {
-        state: { background: location }
-      });
-    };
-
     return (
       <BurgerIngredientUI
         ingredient={ingredient}
         count={count}
         locationState={{ background: location }}
         handleAdd={handleAdd}
-        handleViewClick={handleViewClick}
       />
     );
   }

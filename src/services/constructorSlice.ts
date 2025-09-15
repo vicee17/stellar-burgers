@@ -18,7 +18,6 @@ export const constructorSlice = createSlice({
   reducers: {
     addBun: (state, action: PayloadAction<TIngredient>) => {
       state.bun = { ...action.payload };
-      console.log('Added bun:', state.bun);
     },
     addIngredient: (state, action: PayloadAction<TConstructorIngredient>) => {
       const newIngredient: TConstructorIngredient = {
