@@ -13,10 +13,10 @@ import '../../index.css';
 import styles from './app.module.css';
 
 import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { ProtectedRoute } from '../ProtectedRoute/ProtecredRoute';
 import { useAuth } from '../../hooks/useAuth';
-import { useDispatch, useSelector } from '../../services/store';
+import { useDispatch } from '../../services/store';
 import { setAuthCheck } from '../../services/userSlice';
 import { useEffect } from 'react';
 import { fetchIngredients } from '../../services/ingredientsSlice';
@@ -24,6 +24,7 @@ import { fetchIngredients } from '../../services/ingredientsSlice';
 const App = () => {
   const dispatch = useDispatch();
   const { isAuthChecked } = useAuth();
+  const navigate = useNavigate();
   const location = useLocation();
   const background = location.state?.background;
 
@@ -39,6 +40,22 @@ const App = () => {
   if (!isAuthChecked) {
     return <div>Загрузка...</div>;
   }
+
+  const handleClose = () => {
+    console.log(
+      'handleClose called, background:',
+      background,
+      'history length:',
+      window.history.length
+    );
+    if (background && window.history.length > 1) {
+      window.history.back();
+      console.log('Modal closed via history.back');
+    } else {
+      console.log('Modal closed manually or no history');
+      navigate('/', { replace: true });
+    }
+  };
 
   return (
     <div className={styles.app}>
@@ -99,17 +116,14 @@ const App = () => {
         />
         //Route for NotFound404
         <Route path='*' element={<NotFound404 />} />
+        //Modal and publicRoutes
       </Routes>
-      //Modal and publicRoutes
       {background && (
         <Routes>
           <Route
             path='/feed/:number'
             element={
-              <Modal
-                title='Детали заказа'
-                onClose={() => window.history.back()}
-              >
+              <Modal title='Детали заказа' onClose={handleClose}>
                 <OrderInfo />
               </Modal>
             }
@@ -117,10 +131,7 @@ const App = () => {
           <Route
             path='/ingredients/:id'
             element={
-              <Modal
-                title='Детали ингредиента'
-                onClose={() => window.history.back()}
-              >
+              <Modal title='Детали ингредиента' onClose={handleClose}>
                 <IngredientDetails />
               </Modal>
             }
