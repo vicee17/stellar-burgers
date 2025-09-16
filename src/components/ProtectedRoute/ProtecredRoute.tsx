@@ -1,7 +1,8 @@
 import { FC } from 'react';
-import { useSelector } from 'react-redux';
+
 import { Navigate, useLocation } from 'react-router-dom';
 import { selectIsAuth } from '../../services/userSlice';
+import { useSelector } from '../../services/store';
 
 interface ProtectedRouteProps {
   children: JSX.Element;

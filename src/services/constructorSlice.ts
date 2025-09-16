@@ -20,16 +20,12 @@ export const constructorSlice = createSlice({
       state.bun = { ...action.payload };
     },
     addIngredient: (state, action: PayloadAction<TConstructorIngredient>) => {
-      const newIngredient: TConstructorIngredient = {
-        ...action.payload,
-        id: uuid()
-      };
-      state.ingredients.push(newIngredient);
+      state.ingredients.push(action.payload);
     },
     removeIngredient: (state, action: PayloadAction<string>) => {
       if (state.ingredients) {
         state.ingredients = state.ingredients?.filter(
-          (item) => item._id !== action.payload
+          (item) => item.id !== action.payload
         );
       }
     },

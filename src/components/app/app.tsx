@@ -133,7 +133,9 @@ const App = () => {
             path='/profile/orders/:number'
             element={
               <ProtectedRoute>
-                <OrderInfo />
+                <Modal title='Детали заказа' onClose={handleClose}>
+                  <OrderInfo />
+                </Modal>
               </ProtectedRoute>
             }
           />
