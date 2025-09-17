@@ -24,7 +24,7 @@ export const FeedInfo: FC = () => {
   const readyOrders = getOrders(orders, 'done');
   const pendingOrders = getOrders(orders, 'pending');
 
-  if (isLoading) {
+  if (isLoading || !feed) {
     return <Preloader />;
   }
 

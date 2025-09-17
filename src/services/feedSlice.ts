@@ -67,7 +67,7 @@ const feedSlice = createSlice({
       .addCase(fetchOrders.fulfilled, (state, action) => {
         state.isLoading = false;
         state.orders = action.payload.orders;
-        state.feed = action.payload;
+        state.feed = action.payload || [];
       })
       .addCase(fetchOrders.rejected, (state, action) => {
         state.isLoading = false;

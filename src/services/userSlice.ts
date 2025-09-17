@@ -202,6 +202,7 @@ const userSlice = createSlice({
       .addCase(logoutUser.fulfilled, (state) => {
         state.user = null;
         state.isAuthChecked = true;
+        state.isAuth = false;
       })
       //forgotPassword
       .addCase(forgotPassword.pending, (state) => {

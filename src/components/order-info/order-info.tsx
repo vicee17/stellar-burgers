@@ -10,7 +10,6 @@ import { selectIngredientsLoading } from '../../services/ingredientsSlice';
 
 export const OrderInfo: FC = () => {
   const ingredients = useSelector(selectConstructorIngredients);
-  const orders = useSelector(selectFeedData);
   const { number } = useParams<{ number?: string }>();
   const ingredientLoading = useSelector(selectIngredientsLoading);
   const feedLoading = useSelector(selectFeedLoading);
