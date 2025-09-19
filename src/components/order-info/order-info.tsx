@@ -1,34 +1,63 @@
-import { FC, useMemo } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
-import { TIngredient } from '@utils-types';
+import { TIngredient, TOrder } from '@utils-types';
 import { useSelector } from '../../services/store';
-import { selectConstructorIngredients } from '../../services/constructorSlice';
 import { selectFeedData, selectFeedLoading } from '../../services/feedSlice';
 import { useParams } from 'react-router-dom';
-import { selectIngredientsLoading } from '../../services/ingredientsSlice';
+import {
+  selectIngredients,
+  selectIngredientsLoading
+} from '../../services/ingredientsSlice';
+import { getOrderByNumberApi } from '@api';
 
 export const OrderInfo: FC = () => {
-  const ingredients = useSelector(selectConstructorIngredients);
+  const ingredients = useSelector(selectIngredients);
   const { number } = useParams<{ number?: string }>();
   const ingredientLoading = useSelector(selectIngredientsLoading);
   const feedLoading = useSelector(selectFeedLoading);
   const ordersData = useSelector(selectFeedData);
+  const [orderData, setOrderData] = useState<TOrder | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const orderData = useMemo(() => {
-    if (!number || !ordersData?.orders?.length) return null;
-    const orderNumber = parseInt(number, 10);
-    const foundOrder = ordersData.orders.find(
-      (order) => order.number === orderNumber
-    );
-    if (!foundOrder) {
-      console.error(`Order with number ${number} not found`);
-      return null;
-    }
-    return foundOrder;
+  useEffect(() => {
+    const fetchOrder = async () => {
+      if (!number) return;
+
+      setIsLoading(true);
+      setError(null);
+
+      const orderNumber = parseInt(number, 10);
+      let foundOrder: TOrder | undefined;
+
+      if (ordersData?.orders?.length) {
+        foundOrder = ordersData.orders.find(
+          (order) => order.number === orderNumber
+        );
+      }
+
+      if (!foundOrder) {
+        try {
+          const response = await getOrderByNumberApi(orderNumber);
+          if (response.success && response.orders.length > 0) {
+            foundOrder = response.orders[0];
+          } else {
+            throw new Error('Order not found on server');
+          }
+        } catch (err) {
+          setError((err as Error).message);
+          console.error(`Error fetching order ${number}:`, err);
+        }
+      }
+
+      setOrderData(foundOrder || null);
+      setIsLoading(false);
+    };
+
+    fetchOrder();
   }, [number, ordersData]);
 
-  /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {
     if (!orderData || !ingredients.length || ingredientLoading || feedLoading)
       return null;
@@ -72,6 +101,14 @@ export const OrderInfo: FC = () => {
   }, [orderData, ingredients]);
 
   if (!orderInfo) {
+    return <Preloader />;
+  }
+
+  if (error) {
+    return <div className='text text_type_main-medium'>Ошибка: {error}</div>;
+  }
+
+  if (isLoading) {
     return <Preloader />;
   }
 
