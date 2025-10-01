@@ -6,6 +6,10 @@ import { FeedInfoUIProps, HalfColumnProps, TColumnProps } from './type';
 
 export const FeedInfoUI: FC<FeedInfoUIProps> = memo(
   ({ feed, readyOrders, pendingOrders }) => {
+    if (!feed) {
+      return <div className={styles.loading}>Загрузка...</div>;
+    }
+
     const { total, totalToday } = feed;
 
     return (
