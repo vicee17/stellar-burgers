@@ -1,4 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, combineReducers } from '@reduxjs/toolkit'; // [ADD] combineReducers для создания rootReducer
 
 import {
   TypedUseSelectorHook,
@@ -12,14 +12,16 @@ import burgerConstructorReducer from '../services/constructorSlice';
 import orderReducer from '../services/orderSlice';
 import feedReducesr from '../services/feedSlice';
 
+const rootReducer = combineReducers({
+  user: userReduser,
+  ingredients: ingredientsReducer,
+  burgerConstructor: burgerConstructorReducer,
+  order: orderReducer,
+  feed: feedReducesr
+});
+
 const store = configureStore({
-  reducer: {
-    user: userReduser,
-    ingredients: ingredientsReducer,
-    burgerConstructor: burgerConstructorReducer,
-    order: orderReducer,
-    feed: feedReducesr
-  },
+  reducer: rootReducer, 
   devTools: process.env.NODE_ENV !== 'production',
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -34,10 +36,12 @@ const store = configureStore({
     })
 });
 
-export type RootState = ReturnType<typeof store.getState>;
+export type RootState = ReturnType<typeof rootReducer>; 
 export type AppDispatch = typeof store.dispatch;
 
 export const useDispatch: () => AppDispatch = () => dispatchHook();
 export const useSelector: TypedUseSelectorHook<RootState> = selectorHook;
 
 export default store;
+
+export { rootReducer };
