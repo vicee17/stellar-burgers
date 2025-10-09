@@ -13,7 +13,7 @@ const initialState: FeedState = {
   orders: [],
   feed: null,
   isLoading: false,
-  error: null,
+  error: null
 };
 
 export const fetchFeeds = createAsyncThunk(

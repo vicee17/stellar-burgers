@@ -21,7 +21,7 @@ const rootReducer = combineReducers({
 });
 
 const store = configureStore({
-  reducer: rootReducer, 
+  reducer: rootReducer,
   devTools: process.env.NODE_ENV !== 'production',
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -36,7 +36,7 @@ const store = configureStore({
     })
 });
 
-export type RootState = ReturnType<typeof rootReducer>; 
+export type RootState = ReturnType<typeof rootReducer>;
 export type AppDispatch = typeof store.dispatch;
 
 export const useDispatch: () => AppDispatch = () => dispatchHook();
