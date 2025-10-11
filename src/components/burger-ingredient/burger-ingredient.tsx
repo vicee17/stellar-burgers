@@ -8,7 +8,7 @@ import { addBun, addIngredient } from '../../services/constructorSlice';
 import { v4 as uuid } from 'uuid';
 
 export const BurgerIngredient: FC<TBurgerIngredientProps> = memo(
-  ({ ingredient, count, dataCy }) => {
+  ({ ingredient, count, ...rest }) => {
     const location = useLocation();
     const dispatch = useDispatch();
 
@@ -27,7 +27,7 @@ export const BurgerIngredient: FC<TBurgerIngredientProps> = memo(
         count={count}
         locationState={{ background: location }}
         handleAdd={handleAdd}
-        dataCy={dataCy}
+        {...rest}
       />
     );
   }
