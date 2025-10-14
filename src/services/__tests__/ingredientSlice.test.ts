@@ -1,33 +1,82 @@
-import ingredientsReducer, { fetchIngredients } from '../ingredientsSlice';
-import { TIngredient } from '../../utils/types';
+import ingredientsSlice from '../ingredientsSlice';
+import { fetchIngredients, clearIngredientsError } from '../ingredientsSlice';
+import { getIngredientsApi } from '../../utils/burger-api';
 
-describe('ingredientsSlice', () => {
-  const initialState = {
-    items: [],
-    isLoading: false,
-    error: null,
-  };
+const initialState = {
+  items: [],
+  isLoading: false,
+  error: null
+};
 
-  it('должен устанавливать isLoading в true при pending', () => {
-    const pendingAction = { type: fetchIngredients.pending.type };
-    const newState = ingredientsReducer(initialState, pendingAction);
-    expect(newState.isLoading).toBe(true); 
-    expect(newState.error).toBe(null);
+jest.mock('../../utils/burger-api', () => ({
+  getIngredientsApi: jest.fn()
+}));
+
+describe('ingredients reducer', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
-  it('должен устанавливать данные и isLoading в false при fulfilled', () => {
-    const mockData: TIngredient[] = [{ _id: 'test', name: 'Test', type: 'bun', proteins: 10, fat: 10, carbohydrates: 10, calories: 100, price: 100, image: 'test.png', image_large: 'large.png', image_mobile: 'mobile.png' }];
-    const fulfilledAction = { type: fetchIngredients.fulfilled.type, payload: mockData };
-    const newState = ingredientsReducer(initialState, fulfilledAction);
-    expect(newState.isLoading).toBe(false); 
-    expect(newState.items).toEqual(mockData); 
+  it('should handle fetchIngredients/pending action', () => {
+    const state = ingredientsSlice(
+      initialState,
+      fetchIngredients.pending('mockRequestId')
+    );
+
+    expect(state.isLoading).toBe(true);
+    expect(state.items).toEqual([]);
+    expect(state.error).toBeNull();
   });
 
-  it('должен устанавливать ошибку и isLoading в false при rejected', () => {
-    const mockError = 'Test error';
-    const rejectedAction = { type: fetchIngredients.rejected.type, payload: mockError };
-    const newState = ingredientsReducer(initialState, rejectedAction);
-    expect(newState.isLoading).toBe(false); 
-    expect(newState.error).toBe(mockError); 
+  it('should handle fetchIngredients/fulfilled action', () => {
+    const mockData = [
+      {
+        _id: '1',
+        name: 'Test Ingredient',
+        type: 'bun',
+        proteins: 10,
+        fat: 5,
+        carbohydrates: 20,
+        calories: 100,
+        price: 20,
+        image: 'test.jpg',
+        image_large: 'large.jpg',
+        image_mobile: 'mobile.jpg'
+      }
+    ];
+    const state = ingredientsSlice(
+      initialState,
+      fetchIngredients.fulfilled(mockData, 'mockRequestId')
+    );
+
+    expect(state.isLoading).toBe(false);
+    expect(state.items).toEqual(mockData);
+    expect(state.error).toBeNull();
+  });
+
+  it('should handle fetchIngredients/rejected action', () => {
+    const mockError = 'Test error message';
+    const rejectedAction = {
+      type: 'ingredients/fetchIngredients/rejected',
+      payload: mockError,
+      error: null,
+      meta: { requestId: 'mockRequestId' }
+    };
+    const state = ingredientsSlice(initialState, rejectedAction);
+    expect(state.isLoading).toBe(false);
+    expect(state.items).toEqual([]);
+    expect(state.error).toEqual(mockError);
+  });
+
+  it('should handle clearIngredientsError reducer', () => {
+    const stateWithError = {
+      ...initialState,
+      error: 'Test error'
+    };
+    const state = ingredientsSlice(stateWithError, clearIngredientsError());
+
+    expect(state.error).toBeNull();
+    expect(state.isLoading).toBe(false);
+    expect(state.items).toEqual([]);
   });
 });

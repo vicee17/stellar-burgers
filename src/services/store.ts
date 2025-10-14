@@ -1,5 +1,4 @@
-import { configureStore, combineReducers } from '@reduxjs/toolkit'; // [ADD] combineReducers для создания rootReducer
-
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import {
   TypedUseSelectorHook,
   useDispatch as dispatchHook,

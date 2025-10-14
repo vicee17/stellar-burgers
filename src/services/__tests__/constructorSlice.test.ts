@@ -1,91 +1,128 @@
-import constructorReducer, { addIngredient, removeIngredient, moveIngredient, clearConstructor } from '../constructorSlice';
-import { TConstructorIngredient, TIngredient } from '../../utils/types';
+import { constructorSlice } from '../constructorSlice';
+import {
+  addBun,
+  addIngredient,
+  removeIngredient,
+  moveIngredient
+} from '../constructorSlice';
 
-describe('constructorSlice', () => {
-  const initialState = {
-    bun: null,
-    ingredients: [],
-  };
+const initialState = {
+  bun: null,
+  ingredients: []
+};
 
-  it('должен добавлять ингредиент', () => {
-    const ingredient: TConstructorIngredient = {
-      _id: 'test-id',
-      name: 'Test Ingredient',
-      type: 'main',
+describe('burgerConstructor reducer', () => {
+  it('should handle addBun action', () => {
+    const mockBun = {
+      _id: 'bun1',
+      name: 'Test Bun',
+      type: 'bun',
       proteins: 10,
-      fat: 10,
-      carbohydrates: 10,
+      fat: 5,
+      carbohydrates: 20,
       calories: 100,
-      price: 100,
-      image: 'test-image.png',
-      image_large: 'test-large.png',
-      image_mobile: 'test-mobile.png',
-      id: 'unique-id',
+      price: 20,
+      image: 'test-image.jpg',
+      image_large: 'test-large.jpg',
+      image_mobile: 'test-mobile.jpg'
     };
+    const state = constructorSlice.reducer(initialState, addBun(mockBun));
 
-    const newState = constructorReducer(initialState, addIngredient(ingredient));
-
-    expect(newState.ingredients).toHaveLength(1); 
-    expect(newState.ingredients[0]).toEqual(ingredient);
+    expect(state.bun).toEqual(mockBun);
+    expect(state.ingredients).toEqual([]);
   });
 
-  it('должен удалять ингредиент', () => {
-    const ingredient: TConstructorIngredient = {
-      _id: 'test-id',
+  it('should handle addIngredient action', () => {
+    const mockIngredient = {
+      _id: 'ing1',
       name: 'Test Ingredient',
       type: 'main',
-      proteins: 10,
-      fat: 10,
-      carbohydrates: 10,
-      calories: 100,
-      price: 100,
-      image: 'test-image.png',
-      image_large: 'test-large.png',
-      image_mobile: 'test-mobile.png',
-      id: 'unique-id',
+      proteins: 15,
+      fat: 8,
+      carbohydrates: 25,
+      calories: 150,
+      price: 10,
+      image: 'test-image.jpg',
+      image_large: 'test-large.jpg',
+      image_mobile: 'test-mobile.jpg',
+      id: 'unique-id'
     };
+    const state = constructorSlice.reducer(
+      initialState,
+      addIngredient(mockIngredient)
+    );
 
-    const stateWithIngredient = constructorReducer(initialState, addIngredient(ingredient));
-    const newState = constructorReducer(stateWithIngredient, removeIngredient('unique-id'));
-
-    expect(newState.ingredients).toHaveLength(0); 
+    expect(state.bun).toEqual(null);
+    expect(state.ingredients).toEqual([mockIngredient]);
   });
 
-  it('должен изменять порядок ингредиентов', () => {
-    const ingredient1: TConstructorIngredient = {
-      _id: 'test-id-1',
-      name: 'Test Ingredient 1',
+  it('should handle removeIngredient action', () => {
+    const mockIngredient = {
+      _id: 'ing1',
+      name: 'Test Ingredient',
       type: 'main',
-      proteins: 10,
-      fat: 10,
-      carbohydrates: 10,
-      calories: 100,
-      price: 100,
-      image: 'test-image-1.png',
-      image_large: 'test-large-1.png',
-      image_mobile: 'test-mobile-1.png',
-      id: 'unique-id-1',
+      proteins: 15,
+      fat: 8,
+      carbohydrates: 25,
+      calories: 150,
+      price: 10,
+      image: 'test-image.jpg',
+      image_large: 'test-large.jpg',
+      image_mobile: 'test-mobile.jpg',
+      id: 'unique-id'
     };
-    const ingredient2: TConstructorIngredient = {
-      _id: 'test-id-2',
-      name: 'Test Ingredient 2',
+    const stateWithIngredient = constructorSlice.reducer(
+      initialState,
+      addIngredient(mockIngredient)
+    );
+    const state = constructorSlice.reducer(
+      stateWithIngredient,
+      removeIngredient('unique-id')
+    );
+
+    expect(state.bun).toEqual(null);
+    expect(state.ingredients).toEqual([]);
+  });
+
+  it('should handle moveIngredient action', () => {
+    const mockIng1 = {
+      _id: 'ing1',
+      name: 'Ing1',
+      type: 'main',
+      proteins: 15,
+      fat: 8,
+      carbohydrates: 25,
+      calories: 150,
+      price: 10,
+      image: 'test-image.jpg',
+      image_large: 'test-large.jpg',
+      image_mobile: 'test-mobile.jpg',
+      id: 'id1'
+    };
+    const mockIng2 = {
+      _id: 'ing2',
+      name: 'Ing2',
       type: 'main',
       proteins: 20,
-      fat: 20,
-      carbohydrates: 20,
+      fat: 10,
+      carbohydrates: 30,
       calories: 200,
-      price: 200,
-      image: 'test-image-2.png',
-      image_large: 'test-large-2.png',
-      image_mobile: 'test-mobile-2.png',
-      id: 'unique-id-2',
+      price: 20,
+      image: 'test-image.jpg',
+      image_large: 'test-large.jpg',
+      image_mobile: 'test-mobile.jpg',
+      id: 'id2'
     };
+    const stateWithIngredients = {
+      ...initialState,
+      ingredients: [mockIng1, mockIng2]
+    };
+    const state = constructorSlice.reducer(
+      stateWithIngredients,
+      moveIngredient({ fromIndex: 0, toIndex: 1 })
+    );
 
-    const stateWithIngredients = constructorReducer(initialState, addIngredient(ingredient1));
-    const stateAfterAdd = constructorReducer(stateWithIngredients, addIngredient(ingredient2));
-    const newState = constructorReducer(stateAfterAdd, moveIngredient({ fromIndex: 1, toIndex: 0 }));
-
-    expect(newState.ingredients[0]).toEqual(ingredient2); 
-    expect(newState.ingredients[1]).toEqual(ingredient1);
+    expect(state.bun).toEqual(null);
+    expect(state.ingredients).toEqual([mockIng2, mockIng1]);
   });
 });
