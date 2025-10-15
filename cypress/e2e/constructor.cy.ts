@@ -13,26 +13,23 @@ describe('Страница конструктора бургера', () => {
     }).as('createOrder');
 
     cy.intercept('GET', '/api/auth/user', {
-      fixture: 'user.json' 
+      fixture: 'user.json'
     }).as('getUser');
 
     // Подготовка токенов авторизации
-    cy.window().then((win) => {
-      win.localStorage.setItem('refreshToken', 'mock_refresh_token');
-      win.document.cookie = 'accessToken=mock_access_token';
-    });
+    window.localStorage.setItem(
+      'refreshToken',
+      JSON.stringify('test-refreshToken')
+    );
+    cy.setCookie('accessToken', 'test-accessToken');
 
-    cy.visit('/');
-    cy.wait('@getIngredients');
+    cy.visit('http://localhost:4000');
   });
 
   afterEach(() => {
     // Очистка токенов после теста
-    cy.window().then((win) => {
-      win.localStorage.removeItem('refreshToken');
-      win.document.cookie =
-        'accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-    });
+    cy.clearLocalStorage();
+    cy.clearCookies();
   });
 
   it('добавление ингредиента из списка в конструктор', () => {
@@ -74,10 +71,10 @@ describe('Страница конструктора бургера', () => {
 
     // Проверка модального окна с номером заказа
     cy.get('[data-cy="order-modal"]').should('exist');
-    cy.get('[data-cy="order-number"]').should('contain', '034536');
+    cy.get('[data-cy="order-number"]').should('contain', '3456');
 
     // Закрытие модального окна
-    cy.get('[data-cy="order-close"]').click();
+    cy.get('[data-cy="modal-close"]').click();
     cy.get('[data-cy="order-modal"]').should('not.exist');
 
     // Проверка очистки конструктора

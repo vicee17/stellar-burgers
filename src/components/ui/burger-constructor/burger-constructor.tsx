@@ -93,11 +93,7 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
     </div>
 
     {orderRequest && (
-      <Modal
-        onClose={closeOrderModal}
-        title={'Оформляем заказ...'}
-        data-cy='order-modal'
-      >
+      <Modal onClose={closeOrderModal} title={'Оформляем заказ...'}>
         <Preloader />
       </Modal>
     )}
@@ -106,9 +102,11 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
       <Modal
         onClose={closeOrderModal}
         title={orderRequest ? 'Оформляем заказ...' : ''}
-        data-cy='order-modal'
       >
-        <OrderDetailsUI orderNumber={orderModalData.number} />
+        <OrderDetailsUI
+          orderNumber={orderModalData.number}
+          data-cy='order-modal'
+        />
       </Modal>
     )}
   </section>
