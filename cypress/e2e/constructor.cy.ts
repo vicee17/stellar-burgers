@@ -1,5 +1,22 @@
 /// <reference types="cypress" />
 
+const testUrl = 'http://localhost:4000';
+
+export const SELECTORS = {
+  BUN: '[data-cy="bun"]',
+  MAIN: '[data-cy="main"]',
+  INGREDIENT: '[data-cy="ingredient"]',
+  ORDER_BUTTON: '[data-cy="order-button"]',
+  ORDER_MODAL: '[data-cy="order-modal"]',
+  ORDER_NUMBER: '[data-cy="order-number"]',
+  MODAL_CLOSE: '[data-cy="modal-close"]',
+  MODAL_TITLE: '[data-cy="modal-title"]',
+  MODAL_OVERLAY: '[data-cy="modal-overlay"]',
+  BUN_PRICE_TOP: '[data-cy="bun-price-top"]',
+  BUN_PRICE_BOTTOM: '[data-cy="bun-price-bottom"]',
+  MAIN_PRICE: '[data-cy="main-price"]'
+} as const;
+
 describe('Страница конструктора бургера', () => {
   beforeEach(() => {
     // Перехват запроса на ингредиенты с моковыми данными
@@ -23,7 +40,7 @@ describe('Страница конструктора бургера', () => {
     );
     cy.setCookie('accessToken', 'test-accessToken');
 
-    cy.visit('http://localhost:4000');
+    cy.visit(testUrl);
   });
 
   afterEach(() => {
@@ -34,52 +51,50 @@ describe('Страница конструктора бургера', () => {
 
   it('добавление ингредиента из списка в конструктор', () => {
     // Добавление булки
-    cy.get('[data-cy="bun"]').contains('Добавить').click();
-    cy.get('[data-cy="bun-price-top"]').contains('Краторная булка');
-    cy.get('[data-cy="bun-price-bottom"]').contains('Краторная булка');
+    cy.get(SELECTORS.BUN).contains('Добавить').click();
+    cy.get(SELECTORS.BUN_PRICE_TOP).contains('Краторная булка');
+    cy.get(SELECTORS.BUN_PRICE_BOTTOM).contains('Краторная булка');
 
     // Добавление начинки
-    cy.get('[data-cy="main"]').contains('Добавить').click();
-    cy.get('[data-cy="main-price"]').contains(
-      'Филе Люминесцентный вегетарианский'
-    );
+    cy.get(SELECTORS.MAIN).contains('Добавить').click();
+    cy.get(SELECTORS.MAIN_PRICE).contains('Филе Люминесцентный вегетарианский');
   });
 
   it('работа модальных окон: открытие и закрытие', () => {
     // Открытие модального окна ингредиента
-    cy.get('[data-cy=ingredient]').eq(0).click();
-    cy.get('[data-cy="modal-title"]').should('contain', 'Детали ингредиента');
+    cy.get(SELECTORS.INGREDIENT).eq(0).click();
+    cy.get(SELECTORS.MODAL_TITLE).should('contain', 'Детали ингредиента');
 
     //Закрытие по клику на крестик
-    cy.get('[data-cy="modal-close"]').click();
-    cy.get('[data-cy="modal-title"]').should('not.exist');
+    cy.get(SELECTORS.MODAL_CLOSE).click();
+    cy.get(SELECTORS.MODAL_TITLE).should('not.exist');
 
     // Закрытие по клику на оверлей
-    cy.get('[data-cy=ingredient]').eq(0).click();
-    cy.get('[data-cy="modal-overlay"]').click({ force: true });
-    cy.get('[data-cy="modal-title"]').should('not.exist');
+    cy.get(SELECTORS.INGREDIENT).eq(0).click();
+    cy.get(SELECTORS.MODAL_OVERLAY).click({ force: true });
+    cy.get(SELECTORS.MODAL_TITLE).should('not.exist');
   });
 
   it('создание заказа', () => {
     // Добавление ингредиентов в конструктор
-    cy.get('[data-cy="bun"]').contains('Добавить').click();
-    cy.get('[data-cy="main"]').first().click();
+    cy.get(SELECTORS.BUN).contains('Добавить').click();
+    cy.get(SELECTORS.MAIN).first().click();
 
     // Клик по кнопке "Оформить заказ"
-    cy.get('[data-cy="order-button"]').click();
+    cy.get(SELECTORS.ORDER_BUTTON).click();
     cy.wait('@createOrder');
 
     // Проверка модального окна с номером заказа
-    cy.get('[data-cy="order-modal"]').should('exist');
-    cy.get('[data-cy="order-number"]').should('contain', '3456');
+    cy.get(SELECTORS.ORDER_MODAL).should('exist');
+    cy.get(SELECTORS.ORDER_NUMBER).should('contain', '3456');
 
     // Закрытие модального окна
-    cy.get('[data-cy="modal-close"]').click();
-    cy.get('[data-cy="order-modal"]').should('not.exist');
+    cy.get(SELECTORS.MODAL_CLOSE).click();
+    cy.get(SELECTORS.ORDER_MODAL).should('not.exist');
 
     // Проверка очистки конструктора
-    cy.get('[data-cy="bun-price-top"]').should('not.exist');
-    cy.get('[data-cy="bun-price-bottom"]').should('not.exist');
-    cy.get('[data-cy="main-price"]').should('not.exist');
+    cy.get(SELECTORS.BUN_PRICE_TOP).should('not.exist');
+    cy.get(SELECTORS.BUN_PRICE_BOTTOM).should('not.exist');
+    cy.get(SELECTORS.MAIN_PRICE).should('not.exist');
   });
 });

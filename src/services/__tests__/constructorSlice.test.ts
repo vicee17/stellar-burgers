@@ -1,15 +1,10 @@
-import { constructorSlice } from '../constructorSlice';
+import { constructorSlice, initialState } from '../constructorSlice';
 import {
   addBun,
   addIngredient,
   removeIngredient,
   moveIngredient
 } from '../constructorSlice';
-
-const initialState = {
-  bun: null,
-  ingredients: []
-};
 
 describe('burgerConstructor reducer', () => {
   it('should handle addBun action', () => {

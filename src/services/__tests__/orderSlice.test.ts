@@ -1,11 +1,5 @@
-import orderSlice from '../orderSlice';
+import orderSlice, { initialState } from '../orderSlice';
 import { orderBurgerApi } from '../../utils/burger-api';
-
-const initialState = {
-  orderData: null,
-  isLoading: false,
-  error: null
-};
 
 jest.mock('../../utils/burger-api', () => ({
   orderBurgerApi: jest.fn()

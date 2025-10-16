@@ -1,4 +1,4 @@
-import userSlice from '../userSlice';
+import userSlice, { initialState } from '../userSlice';
 import {
   forgotPasswordApi,
   getUserApi,
@@ -8,14 +8,6 @@ import {
   resetPasswordApi,
   updateUserApi
 } from '../../utils/burger-api';
-
-const initialState = {
-  user: null,
-  isLoading: false,
-  isAuth: false,
-  isAuthChecked: false,
-  error: null
-};
 
 jest.mock('../../utils/burger-api', () => ({
   loginUserApi: jest.fn(),

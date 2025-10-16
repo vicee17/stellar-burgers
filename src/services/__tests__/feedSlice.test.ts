@@ -1,12 +1,5 @@
-import feedSlice from '../feedSlice';
+import feedSlice, { initialState } from '../feedSlice';
 import { getFeedsApi, getOrdersApi } from '../../utils/burger-api';
-
-const initialState = {
-  orders: [],
-  feed: null,
-  isLoading: false,
-  error: null
-};
 
 jest.mock('../../utils/burger-api', () => ({
   getFeedsApi: jest.fn(),

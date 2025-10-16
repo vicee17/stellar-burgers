@@ -1,12 +1,6 @@
-import ingredientsSlice from '../ingredientsSlice';
+import ingredientsSlice, { initialState } from '../ingredientsSlice';
 import { fetchIngredients, clearIngredientsError } from '../ingredientsSlice';
 import { getIngredientsApi } from '../../utils/burger-api';
-
-const initialState = {
-  items: [],
-  isLoading: false,
-  error: null
-};
 
 jest.mock('../../utils/burger-api', () => ({
   getIngredientsApi: jest.fn()
