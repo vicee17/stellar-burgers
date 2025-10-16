@@ -12,7 +12,7 @@ import {
 } from '../../services/orderSlice';
 import { selectIsAuth } from '../../services/userSlice';
 
-export const BurgerConstructor: FC = () => {
+export const BurgerConstructor: FC = ({ ...rest }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -63,6 +63,7 @@ export const BurgerConstructor: FC = () => {
       orderModalData={orderData}
       onOrderClick={onOrderClick}
       closeOrderModal={closeOrderModal}
+      {...rest}
     />
   );
 };
